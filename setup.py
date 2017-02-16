@@ -16,4 +16,4 @@ setup(name='micropython-uaioftp',
       maintainer_email='cwyark@gmail.com',
       license='MIT',
       install_requires=['micropython-logging'],
-      packages=['uaioftp'])
+      py_modules=['uaioftp'])
