@@ -7,7 +7,7 @@ sys.path.append("..")
 
 setup(name='micropython-uaioftp',
       version='0.9.0',
-      description='Lightweight ftp library for MicroPython.',
+      description='Lightweight ftp asyncio library for MicroPython.',
       long_description=open('README.md').read(),
       url='https://github.com/cwyark/micropython-uaioftp',
       author='Chester Tseng',
