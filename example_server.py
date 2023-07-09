@@ -25,7 +25,7 @@ data_port = cmd_port - 1
 
 user_credits = [("cwyark", "topsecret"), ("karl", "hidden")]
 # user_credits = {"cwyark": "topsecret", "karl": "hidden"}
-# no anonymous login when set to None
+# anonymous login when set to None
 user_credits = None
 
 loop = asyncio.get_event_loop()
