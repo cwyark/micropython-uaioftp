@@ -1,3 +1,17 @@
+#
+# authors
+#
+# 2017 - YuSheng / cwyark
+# https://github.com/cwyark
+# https://github.com/cwyark/micropython-uaioftp
+# (original author)
+#
+# 2023 - k. goger / kr-g
+# https://github.com/kr-g
+# https://github.com/kr-g/mpy-uaioftp
+#
+# MIT License
+#
 import uos as os
 import usocket as _socket
 import uasyncio as asyncio
@@ -522,4 +536,3 @@ class uaioftpd:
     async def server(self, reader, writer):
         session = Session(self)
         await session.serve(reader, writer)
-
