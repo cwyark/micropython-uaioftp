@@ -24,7 +24,7 @@ except:
         def info(self, *args):
             print(*args)
 
-        def excep(self, *args):
+        def error(self, *args):
             print("ERR", *args)
 
 
@@ -158,7 +158,7 @@ class Session(object):
             try:
                 data = await reader.readline()
             except OSError as ex:
-                log.excep(ex)
+                log.error(ex)
                 break
             if data is None or len(data) == 0:
                 log.info("no data, break")
@@ -186,10 +186,10 @@ class Session(object):
                         if keep_open is False:
                             break
                     except OSError as ex:
-                        log.excep(ex)
+                        log.error(ex)
                         break
                     except AccessDenied as ex:
-                        log.excep(ex)
+                        log.error(ex)
                         await writer.awrite("530 Not logged in.\r\n")
                         break
                 else:
@@ -443,13 +443,13 @@ class Session(object):
                             await writer.awrite(buf)
                     await stream.awrite("226 Transfer complete.\r\n")
                 except OSError as e:
-                    log.excep("transmittion error", e)
+                    log.error("transmittion error", e)
                     if e.args[0] == uerrno.ENOENT:
                         await stream.awrite("550 No such file.\r\n")
                     else:
                         await stream.awrite("550 Open file error.\r\n")
                 except Exception as ex:
-                    log.excep("File i/o error", ex)
+                    log.error("File i/o error", ex)
                     await stream.awrite("550 File i/o error {}.\r\n".format(ex))
                 finally:
                     await writer.wait_closed()
@@ -522,3 +522,4 @@ class uaioftpd:
     async def server(self, reader, writer):
         session = Session(self)
         await session.serve(reader, writer)
+
