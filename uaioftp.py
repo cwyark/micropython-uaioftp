@@ -12,6 +12,8 @@
 #
 # MIT License
 #
+
+
 import uos as os
 import usocket as _socket
 import uasyncio as asyncio
@@ -25,7 +27,7 @@ except:
 
     class logging(object):
         def __init__(self, *args):
-            pass
+            self.level = 2
 
         @staticmethod
         def getLogger(*args):
@@ -35,8 +37,12 @@ except:
         def basicConfig(*args):
             pass
 
+        def disable(self, level=0):
+            self.level = level
+
         def info(self, *args):
-            print(*args)
+            if self.level > 1:
+                print(*args)
 
         def error(self, *args):
             print("ERR", *args)
@@ -131,9 +137,9 @@ class Session(object):
         if s is None:
             return s
         # todo proper handling of quotes
-        if s.startswith("\"'"):
+        if s[0] in ['"', "'"]:
             s = s[1:]
-        if s.endswith("\"'"):
+        if s[-1] in ['"', "'"]:
             s = s[:-1]
         return s
 
@@ -184,7 +190,7 @@ class Session(object):
                 # to support also folder names with blanks
                 # todo micropython specific, maxsplit not supported for split()
                 split_data = self.split(data, " ", maxsplit=1)
-                cmd = "cmd_" + split_data[0]  # .strip("\r\n")
+                cmd = "cmd_" + split_data[0].upper()  # .strip("\r\n")
                 argument = split_data[1] if len(split_data) > 1 else None
                 log.info("cmd is %s, argument is %s" % (cmd, argument))
                 if hasattr(self, cmd):
@@ -207,6 +213,7 @@ class Session(object):
                         await writer.awrite("530 Not logged in.\r\n")
                         break
                 else:
+                    log.error("not implement", cmd)
                     await writer.awrite("520 not implement.\r\n")
         await writer.wait_closed()
 
@@ -258,7 +265,7 @@ class Session(object):
 
             log.info("new path", self.cwd)
 
-            await stream.awrite("250 OK.\r\n")
+            await stream.awrite("200 OK.\r\n")
         except OSError as e:
             await stream.awrite("550 {}.\r\n".format(e))
         return True
@@ -322,6 +329,9 @@ class Session(object):
         if argument == "I":
             self.mode_type = "I"
             await stream.awrite("200 Binary Representation.\r\n")
+        elif argument == "A":
+            self.mode_type = "A"
+            await stream.awrite("200 ASCII Representation.\r\n")
         else:
             await stream.awrite("504 Command not implemented for that parameter.\r\n")
         return True
@@ -505,7 +515,7 @@ class Session(object):
                     await stream.awrite("550 File i/o error. {}\r\n".format(e))
                 finally:
                     await writer.wait_closed()
-            return True, False
+            return True
 
 
 class uaioftpd:
@@ -534,5 +544,6 @@ class uaioftpd:
             self.user_credits[u.lower()] = p
 
     async def server(self, reader, writer):
+        log.info("ftpd startup")
         session = Session(self)
         await session.serve(reader, writer)
