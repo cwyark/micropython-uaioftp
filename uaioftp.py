@@ -414,9 +414,13 @@ class Session(object):
                 for i in items:
                     file_stat = os.stat(path + "/" + i)
                     file_date = file_stat[-2]
-                    file_size = file_stat[-4]
 
-                    file_type = "d" if file_stat[0] == 0x4000 else "-"
+                    if file_stat[0] == 0x4000:
+                        file_type = "d"
+                        file_size = 0
+                    else:
+                        file_type = "-"
+                        file_size = file_stat[-4]
 
                     format_date = time.localtime(file_date)
 
