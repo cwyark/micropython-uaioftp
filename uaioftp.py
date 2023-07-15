@@ -424,7 +424,7 @@ class Session(object):
                     # if file year is different from current year
                     # then listing should/ can contain the year instead of hh:mm
                     await writer.awrite(
-                        "%srwxrwxrwx user group %10d %s %2d %d:%d %s\r\n"
+                        "%srwxrwxrwx user group %10d %s %2d %02d:%02d %s\r\n"
                         % (
                             file_type,
                             file_size,
