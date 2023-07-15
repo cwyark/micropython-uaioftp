@@ -243,7 +243,7 @@ class Session(object):
         try:
             # cwd = os.getcwd()
             cwd = self.cwd
-            await stream.awrite('250 "{}".\r\n'.format(cwd))
+            await stream.awrite('257 "{}" is the current directory\r\n'.format(cwd))
         except OSError as e:
             await stream.awrite("550 {}.\r\n".format(e))
         return True
