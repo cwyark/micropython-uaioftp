@@ -499,6 +499,7 @@ class Session(object):
                 log.info("connection established")
                 try:
                     path = self.build_path(argument)
+                    bytes_recv = 0
                     with open(path, "wb") if self.mode_type == "I" else open(
                         path, "w"
                     ) as f:
@@ -511,9 +512,11 @@ class Session(object):
                                 bywr = f.write(data)
                                 if bywr != len(data):
                                     raise OSError("check free space on disc.")
+                                bytes_recv += len(data)
                             except Exception as e:
                                 log.info("exception .. {}".format(e))
                                 break
+                        log.info("STOR", path, bytes_recv)
                     await stream.awrite("226 Transfer complete.\r\n")
                 except OSError as e:
                     await stream.awrite("550 File i/o error. {}\r\n".format(e))
