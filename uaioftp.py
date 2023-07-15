@@ -349,7 +349,9 @@ class Session(object):
         argument = self.strip_quotes(argument)
         if len(argument) > 0:
             self.rename_from = argument
-            await stream.awrite("200 Rename file OK.\r\n")
+            await stream.awrite(
+                "350 Requested file action pending further information.\r\n"
+            )
         else:
             await stream.awrite("550 Parameter missing.\r\n")
         return True
